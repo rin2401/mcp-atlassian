@@ -859,7 +859,7 @@ async def update_issue(
     ctx: Context,
     issue_key: Annotated[str, Field(description="Jira issue key (e.g., 'PROJ-123')")],
     fields: Annotated[
-        dict[str, Any],
+        dict[str, Any] | str,
         Field(
             description=(
                 "Dictionary of fields to update. For 'assignee', provide a string identifier (email, name, or accountId). "
@@ -902,6 +902,9 @@ async def update_issue(
     """
     jira = await get_jira_fetcher(ctx)
     # Use fields directly as dict
+    if isinstance(fields, str):
+        fields = json.loads(fields)
+
     if not isinstance(fields, dict):
         raise ValueError("fields must be a dictionary.")
     update_fields = fields
