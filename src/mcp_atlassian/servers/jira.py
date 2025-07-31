@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 jira_mcp = FastMCP(
     name="Jira MCP Service",
-    description="Provides tools for interacting with Atlassian Jira.",
+    description="Provides tools for interacting with Atlassian Jira.",c
 )
 
 
@@ -650,7 +650,7 @@ async def create_issue(
         ),
     ] = None,
     additional_fields: Annotated[
-        dict[str, Any] | None,
+        dict[str, Any]| str | None,
         Field(
             description=(
                 "(Optional) Dictionary of additional fields to set. Examples:\n"
@@ -692,6 +692,9 @@ async def create_issue(
 
     # Use additional_fields directly as dict
     extra_fields = additional_fields or {}
+    if isinstance(extra_fields, str):
+        extra_fields = json.loads(extra_fields)
+    
     if not isinstance(extra_fields, dict):
         raise ValueError("additional_fields must be a dictionary.")
 
